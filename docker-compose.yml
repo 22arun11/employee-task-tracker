@@ -10,25 +10,26 @@ services:
     restart: always
 
   backend:
-    image: mcr.microsoft.com/dotnet/sdk:8.0
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: tasktracker_backend
-    working_dir: /app
     volumes:
       - ./backend:/app
     ports:
       - "5001:80"
-    tty: true
     depends_on:
       - db
 
   frontend:
-    image: node:22
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: tasktracker_frontend
-    working_dir: /app
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     ports:
       - "4200:4200"
-    tty: true
     depends_on:
       - backend
