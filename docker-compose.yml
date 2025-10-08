@@ -1,0 +1,34 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: tasktracker_db
+    environment:
+      SA_PASSWORD: "StrongPassw0rd!"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    restart: always
+
+  backend:
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    container_name: tasktracker_backend
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    ports:
+      - "5001:80"
+    tty: true
+    depends_on:
+      - db
+
+  frontend:
+    image: node:22
+    container_name: tasktracker_frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "4200:4200"
+    tty: true
+    depends_on:
+      - backend
