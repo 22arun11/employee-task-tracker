@@ -1,0 +1,36 @@
+# Build stage
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-stage
+
+WORKDIR /app
+
+# Copy project file and restore dependencies
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy source code
+COPY . .
+
+# Build and publish the application
+RUN dotnet publish -c Release -o out
+
+# Runtime stage
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS production-stage
+
+WORKDIR /app
+
+# Copy the published application
+COPY --from=build-stage /app/out .
+
+# Create a non-root user
+RUN adduser --disabled-password --gecos '' appuser && chown -R appuser /app
+USER appuser
+
+# Expose port 80
+EXPOSE 80
+
+# Set environment variables
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_URLS=http://+:80
+
+# Start the application
+ENTRYPOINT ["dotnet", "TaskTrackerApi.dll"]
