@@ -1,0 +1,255 @@
+<div class="task-container">
+  <!-- Header Section -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-info">
+        <button class="back-btn" (click)="goBack()">
+          <span class="back-icon">←</span>
+          Back to Dashboard
+        </button>
+        <h1 class="page-title">Task Management</h1>
+        <p class="page-subtitle">Organize and track your team's tasks</p>
+      </div>
+      <button class="btn btn-primary" (click)="showAddTaskForm()">
+        <span class="btn-icon">➕</span>
+        Add Task
+      </button>
+    </div>
+  </header>
+
+  <!-- Search and Filters -->
+  <section class="filter-section">
+    <div class="filter-container">
+      <div class="search-input-wrapper">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="text" 
+          class="search-input" 
+          placeholder="Search tasks by title or description..."
+          [(ngModel)]="searchTerm"
+          (input)="applyFilters()">
+      </div>
+
+      <div class="filter-grid">
+        <select class="filter-select" [(ngModel)]="selectedStatus" (change)="applyFilters()">
+          <option value="">All Statuses</option>
+          <option value="0">Not Started</option>
+          <option value="1">In Progress</option>
+          <option value="2">Completed</option>
+          <option value="3">On Hold</option>
+          <option value="4">Cancelled</option>
+        </select>
+
+        <select class="filter-select" [(ngModel)]="selectedPriority" (change)="applyFilters()">
+          <option value="">All Priorities</option>
+          <option value="1">Low</option>
+          <option value="2">Medium</option>
+          <option value="3">High</option>
+          <option value="4">Critical</option>
+        </select>
+
+        <select class="filter-select" [(ngModel)]="selectedEmployee" (change)="applyFilters()">
+          <option value="">All Employees</option>
+          <option *ngFor="let employee of employees" [value]="employee.id">
+            {{ employee.firstName }} {{ employee.lastName }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- Add/Edit Task Form -->
+  <section class="form-section" *ngIf="showAddForm">
+    <div class="form-container">
+      <div class="form-header">
+        <h2 class="form-title">
+          {{ editingTask ? 'Edit Task' : 'Add New Task' }}
+        </h2>
+        <button class="close-btn" (click)="cancelForm()">✕</button>
+      </div>
+
+      <form class="task-form" (ngSubmit)="saveTask()">
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="title">Task Title</label>
+            <input 
+              type="text" 
+              id="title" 
+              class="form-input"
+              [value]="getCurrentTitle()"
+              (input)="onTitleChange($event)"
+              name="title"
+              required>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="description">Description</label>
+            <textarea 
+              id="description" 
+              class="form-textarea"
+              rows="4"
+              [value]="getCurrentDescription()"
+              (input)="onDescriptionChange($event)"
+              name="description"
+              required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="employeeId">Assigned Employee</label>
+            <select 
+              id="employeeId" 
+              class="form-input"
+              [value]="getCurrentEmployeeId()"
+              (change)="onEmployeeChange($event)"
+              name="employeeId"
+              required>
+              <option value="0">Select Employee</option>
+              <option *ngFor="let employee of employees" [value]="employee.id">
+                {{ employee.firstName }} {{ employee.lastName }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="priority">Priority</label>
+            <select 
+              id="priority" 
+              class="form-input"
+              [value]="getCurrentPriority()"
+              (change)="onPriorityChange($event)"
+              name="priority"
+              required>
+              <option [value]="TaskPriority.Low">Low</option>
+              <option [value]="TaskPriority.Medium">Medium</option>
+              <option [value]="TaskPriority.High">High</option>
+              <option [value]="TaskPriority.Critical">Critical</option>
+            </select>
+          </div>
+
+          <div class="form-group" *ngIf="editingTask">
+            <label for="status">Status</label>
+            <select 
+              id="status" 
+              class="form-input"
+              [(ngModel)]="editingTask.status"
+              name="status"
+              required>
+              <option [value]="TaskItemStatus.NotStarted">Not Started</option>
+              <option [value]="TaskItemStatus.InProgress">In Progress</option>
+              <option [value]="TaskItemStatus.Completed">Completed</option>
+              <option [value]="TaskItemStatus.OnHold">On Hold</option>
+              <option [value]="TaskItemStatus.Cancelled">Cancelled</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="dueDate">Due Date</label>
+            <input 
+              type="date" 
+              id="dueDate" 
+              class="form-input"
+              [value]="getDueDateForInput()"
+              (change)="onDueDateChange($event)"
+              name="dueDate">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="cancelForm()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            {{ editingTask ? 'Update Task' : 'Add Task' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Task List -->
+  <section class="tasks-section">
+    <div class="tasks-header">
+      <h2 class="section-title">All Tasks ({{ filteredTasks.length }})</h2>
+    </div>
+
+    <div class="loading-state" *ngIf="isLoading">
+      <div class="loading-spinner"></div>
+      <p>Loading tasks...</p>
+    </div>
+
+    <div class="tasks-grid" *ngIf="!isLoading && filteredTasks.length > 0">
+      <div class="task-card" *ngFor="let task of filteredTasks" [class.overdue]="isOverdue(task)">
+        <div class="task-header">
+          <div class="task-badges">
+            <span class="priority-badge" [class]="'priority-' + getPriorityClass(task.priority)">
+              {{ getPriorityText(task.priority) }}
+            </span>
+            <span class="status-badge" [class]="'status-' + getStatusClass(task.status)">
+              {{ getStatusText(task.status) }}
+            </span>
+          </div>
+          <div class="task-actions">
+            <button class="action-btn edit" (click)="editTask(task)" title="Edit Task">
+              <span class="action-icon">✏️</span>
+            </button>
+            <button 
+              class="action-btn complete" 
+              (click)="markAsCompleted(task)" 
+              title="Mark as Completed"
+              *ngIf="task.status !== TaskItemStatus.Completed">
+              <span class="action-icon">✅</span>
+            </button>
+            <button class="action-btn delete" (click)="deleteTask(task.id)" title="Delete Task">
+              <span class="action-icon">🗑️</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="task-content">
+          <h3 class="task-title">{{ task.title }}</h3>
+          <p class="task-description">{{ task.description }}</p>
+          
+          <div class="task-meta">
+            <div class="meta-item">
+              <span class="meta-label">Assigned to:</span>
+              <span class="meta-value">{{ getEmployeeName(task.employeeId) }}</span>
+            </div>
+            <div class="meta-item" *ngIf="task.dueDate">
+              <span class="meta-label">Due:</span>
+              <span class="meta-value" [class.overdue-text]="isOverdue(task)">
+                {{ formatDate(task.dueDate) }}
+              </span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Created:</span>
+              <span class="meta-value">{{ formatDate(task.createdDate) }}</span>
+            </div>
+            <div class="meta-item" *ngIf="task.completedDate">
+              <span class="meta-label">Completed:</span>
+              <span class="meta-value">{{ formatDate(task.completedDate) }}</span>
+            </div>
+          </div>
+
+          <div class="task-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="getTaskProgress(task.status)"></div>
+            </div>
+            <span class="progress-text">{{ getTaskProgress(task.status) }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!isLoading && filteredTasks.length === 0">
+      <div class="empty-icon">📝</div>
+      <h3 class="empty-title">{{ searchTerm || selectedStatus || selectedPriority || selectedEmployee ? 'No tasks found' : 'No tasks yet' }}</h3>
+      <p class="empty-message">
+        {{ searchTerm || selectedStatus || selectedPriority || selectedEmployee ? 'Try adjusting your filters' : 'Create your first task to get started' }}
+      </p>
+      <button class="btn btn-primary" (click)="showAddTaskForm()" *ngIf="!searchTerm && !selectedStatus && !selectedPriority && !selectedEmployee">
+        <span class="btn-icon">➕</span>
+        Add First Task
+      </button>
+    </div>
+  </section>
+</div>

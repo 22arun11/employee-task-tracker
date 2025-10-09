@@ -1,15 +1,14 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HttpClientModule, DashboardComponent],
+  imports: [RouterOutlet, HttpClientModule],
   template: `
     <div class="app-container">
       <main class="app-main">
-        <app-dashboard></app-dashboard>
+        <router-outlet></router-outlet>
       </main>
     </div>
   `,

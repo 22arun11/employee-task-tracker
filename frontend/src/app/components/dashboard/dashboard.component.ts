@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { TaskTrackerService } from '../../services/task-tracker.service';
 import { DashboardStats, TaskItem } from '../../models/task-tracker.models';
 
@@ -19,7 +20,10 @@ export class DashboardComponent implements OnInit {
   stats: DashboardStats | null = null;
   recentTasks: TaskItem[] = [];
 
-  constructor(private taskService: TaskTrackerService) {}
+  constructor(
+    private taskService: TaskTrackerService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.loadDashboardData();
@@ -117,21 +121,15 @@ export class DashboardComponent implements OnInit {
   }
 
   navigateToTasks() {
-    // Will implement routing later
-    console.log('Navigating to tasks...');
-    alert('Navigate to Tasks - Coming soon!');
+    this.router.navigate(['/tasks']);
   }
 
   navigateToEmployees() {
-    // Will implement routing later  
-    console.log('Navigating to employees...');
-    alert('Navigate to Employees - Coming soon!');
+    this.router.navigate(['/employees']);
   }
 
   createNewTask() {
-    // Will implement modal or navigation later
-    console.log('Creating new task...');
-    alert('Create New Task - Coming soon!');
+    this.router.navigate(['/tasks']);
   }
 
   viewReports() {

@@ -74,7 +74,7 @@
 }
 
 .stats-section {
-  margin: -30px 60px 40px 60px;
+  margin: 30px 60px 40px 60px;
   padding: 40px;
   position: relative;
   z-index: 2;
@@ -421,7 +421,7 @@
   }
   
   .stats-section {
-    margin: -30px 40px 30px 40px;
+    margin: 0px 40px 30px 40px;
     padding: 30px;
   }
   
