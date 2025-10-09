@@ -1,14 +1,16 @@
 <div class="task-container">
   <!-- Header Section -->
-  <header class="page-header">
+  <header class="dashboard-header">
     <div class="header-content">
       <div class="header-info">
         <button class="back-btn" (click)="goBack()">
           <span class="back-icon">←</span>
           Back to Dashboard
         </button>
-        <h1 class="page-title">Task Management</h1>
-        <p class="page-subtitle">Organize and track your team's tasks</p>
+        <h1 class="dashboard-title">
+          <span class="title-text">Task Management</span>
+        </h1>
+        <p class="dashboard-subtitle">Organize and track your team's tasks</p>
       </div>
       <button class="btn btn-primary" (click)="showAddTaskForm()">
         <span class="btn-icon">➕</span>
@@ -17,8 +19,14 @@
     </div>
   </header>
 
-  <!-- Search and Filters -->
-  <section class="filter-section">
+  <!-- Search and Filters Section -->
+  <section class="main-section">
+    <div class="section-header">
+      <h2 class="section-title">Task Management</h2>
+      <p class="section-subtitle">Search, filter, and manage your tasks</p>
+    </div>
+    
+    <!-- Search and Filters -->
     <div class="filter-container">
       <div class="search-input-wrapper">
         <span class="search-icon">🔍</span>
@@ -56,17 +64,16 @@
         </select>
       </div>
     </div>
-  </section>
 
-  <!-- Add/Edit Task Form -->
-  <section class="form-section" *ngIf="showAddForm">
-    <div class="form-container">
-      <div class="form-header">
-        <h2 class="form-title">
-          {{ editingTask ? 'Edit Task' : 'Add New Task' }}
-        </h2>
-        <button class="close-btn" (click)="cancelForm()">✕</button>
-      </div>
+    <!-- Add/Edit Task Form -->
+    <div class="form-section" *ngIf="showAddForm">
+      <div class="form-container">
+        <div class="form-header">
+          <h2 class="form-title">
+            {{ editingTask ? 'Edit Task' : 'Add New Task' }}
+          </h2>
+          <button class="close-btn" (click)="cancelForm()">✕</button>
+        </div>
 
       <form class="task-form" (ngSubmit)="saveTask()">
         <div class="form-grid">
@@ -164,18 +171,18 @@
         </div>
       </form>
     </div>
-  </section>
-
-  <!-- Task List -->
-  <section class="tasks-section">
-    <div class="tasks-header">
-      <h2 class="section-title">All Tasks ({{ filteredTasks.length }})</h2>
     </div>
 
-    <div class="loading-state" *ngIf="isLoading">
-      <div class="loading-spinner"></div>
-      <p>Loading tasks...</p>
-    </div>
+    <!-- Task List -->
+    <div class="tasks-container">
+      <div class="tasks-header">
+        <h3 class="tasks-title">All Tasks ({{ filteredTasks.length }})</h3>
+      </div>
+
+      <div class="loading-state" *ngIf="isLoading">
+        <div class="loading-spinner"></div>
+        <p>Loading tasks...</p>
+      </div>
 
     <div class="tasks-grid" *ngIf="!isLoading && filteredTasks.length > 0">
       <div class="task-card" *ngFor="let task of filteredTasks" [class.overdue]="isOverdue(task)">
@@ -250,6 +257,7 @@
         <span class="btn-icon">➕</span>
         Add First Task
       </button>
+    </div>
     </div>
   </section>
 </div>

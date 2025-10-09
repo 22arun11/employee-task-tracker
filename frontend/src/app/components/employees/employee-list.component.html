@@ -1,14 +1,16 @@
 <div class="employee-container">
   <!-- Header Section -->
-  <header class="page-header">
+  <header class="dashboard-header">
     <div class="header-content">
       <div class="header-info">
         <button class="back-btn" (click)="goBack()">
           <span class="back-icon">←</span>
           Back to Dashboard
         </button>
-        <h1 class="page-title">Team Members</h1>
-        <p class="page-subtitle">Manage your team and employee information</p>
+        <h1 class="dashboard-title">
+          <span class="title-text">Team Members</span>
+        </h1>
+        <p class="dashboard-subtitle">Manage your team and employee information</p>
       </div>
       <button class="btn btn-primary" (click)="showAddEmployeeForm()">
         <span class="btn-icon">➕</span>
@@ -17,8 +19,13 @@
     </div>
   </header>
 
-  <!-- Search and Filters -->
-  <section class="search-section">
+  <!-- Search and Filters Section -->
+  <section class="main-section">
+    <div class="section-header">
+      <h2 class="section-title">Employee Directory</h2>
+      <p class="section-subtitle">Search and manage your team members</p>
+    </div>
+    
     <div class="search-container">
       <div class="search-input-wrapper">
         <span class="search-icon">🔍</span>
