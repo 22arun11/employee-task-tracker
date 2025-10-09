@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Employee, TaskItem, DashboardStats } from '../models/task-tracker.models';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaskTrackerService {
-  private apiUrl = 'http://localhost:5001/api';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 

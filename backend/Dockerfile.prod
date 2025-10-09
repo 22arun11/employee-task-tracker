@@ -21,16 +21,19 @@ WORKDIR /app
 # Copy the published application
 COPY --from=build-stage /app/out .
 
-# Create a non-root user
-RUN adduser --disabled-password --gecos '' appuser && chown -R appuser /app
-USER appuser
+# Set permissions for OpenShift compatibility
+RUN chgrp -R 0 /app && \
+    chmod -R g=u /app
 
-# Expose port 80
-EXPOSE 80
+# Switch to non-root user with group 0 (OpenShift requirement)
+USER 1001:0
+
+# Expose port 8080 (OpenShift standard)
+EXPOSE 8080
 
 # Set environment variables
 ENV ASPNETCORE_ENVIRONMENT=Production
-ENV ASPNETCORE_URLS=http://+:80
+ENV ASPNETCORE_URLS=http://+:8080
 
 # Start the application
 ENTRYPOINT ["dotnet", "TaskTrackerApi.dll"]

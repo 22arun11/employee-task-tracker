@@ -19,12 +19,12 @@ spec:
     spec:
       containers:
       - name: frontend-app
-        image: arun2203/tasktracker-frontend:v10
+        image: image-registry.openshift-image-registry.svc:5000/YOUR_NAMESPACE/tasktracker-frontend:latest
         ports:
-        - containerPort: 8080
+        - containerPort: 80
         env:
         - name: API_URL
-          value: "https://tasktracker-backend-route-22arun11-dev.apps.rm2.thpm.p1.openshiftapps.com/api"
+          value: "https://tasktracker-backend-route-YOUR_NAMESPACE.apps.sandbox-m2.ll9k.p1.openshiftapps.com/api"
         resources:
           requests:
             memory: "128Mi"
@@ -34,14 +34,14 @@ spec:
             cpu: "200m"
         livenessProbe:
           httpGet:
-            path: /health
-            port: 8080
+            path: /
+            port: 80
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /health
-            port: 8080
+            path: /
+            port: 80
           initialDelaySeconds: 5
           periodSeconds: 5
 ---
@@ -57,8 +57,8 @@ spec:
     app: tasktracker
     component: frontend
   ports:
-  - port: 8080
-    targetPort: 8080
+  - port: 80
+    targetPort: 80
     name: http
 ---
 apiVersion: route.openshift.io/v1

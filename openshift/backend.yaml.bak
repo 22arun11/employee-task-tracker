@@ -19,14 +19,16 @@ spec:
     spec:
       containers:
       - name: backend-api
-        image: arun2203/tasktracker-backend:v3
+        image: image-registry.openshift-image-registry.svc:5000/YOUR_NAMESPACE/tasktracker-backend:latest
+        ports:
+        - containerPort: 80
         env:
         - name: ASPNETCORE_ENVIRONMENT
           value: "Production"
         - name: ASPNETCORE_URLS
-          value: "http://+:8080"
+          value: "http://+:80"
         - name: ConnectionStrings__DefaultConnection
-          value: "Host=tasktracker-db-service;Port=5432;Database=tasktracker;Username=tasktracker;Password=StrongPassw0rd!"
+          value: "Server=tasktracker-db-service,1433;Database=TaskTracker;User Id=sa;Password=StrongPassw0rd!;TrustServerCertificate=true;"
         resources:
           requests:
             memory: "256Mi"
@@ -34,18 +36,16 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
-        ports:
-        - containerPort: 8080
         livenessProbe:
           httpGet:
             path: /api/employees
-            port: 8080
+            port: 80
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /api/employees
-            port: 8080
+            port: 80
           initialDelaySeconds: 5
           periodSeconds: 5
 ---
@@ -61,8 +61,8 @@ spec:
     app: tasktracker
     component: backend
   ports:
-  - port: 8080
-    targetPort: 8080
+  - port: 80
+    targetPort: 80
     name: http
 ---
 apiVersion: route.openshift.io/v1
