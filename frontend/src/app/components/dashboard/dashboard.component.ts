@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TaskTrackerService } from '../../services/task-tracker.service';
+import { ScrollService } from '../../services/scroll.service';
 import { DashboardStats, TaskItem } from '../../models/task-tracker.models';
 
 @Component({
@@ -22,10 +23,12 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private taskService: TaskTrackerService,
-    private router: Router
+    private router: Router,
+    private scrollService: ScrollService
   ) {}
 
   ngOnInit() {
+    this.scrollService.scrollToTopImmediate();
     this.loadDashboardData();
   }
 

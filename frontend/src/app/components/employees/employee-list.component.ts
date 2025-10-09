@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TaskTrackerService } from '../../services/task-tracker.service';
+import { ScrollService } from '../../services/scroll.service';
 import { Employee } from '../../models/task-tracker.models';
 
 @Component({
@@ -42,10 +43,12 @@ export class EmployeeListComponent implements OnInit {
 
   constructor(
     private taskTrackerService: TaskTrackerService,
-    private router: Router
+    private router: Router,
+    private scrollService: ScrollService
   ) {}
 
   ngOnInit() {
+    this.scrollService.scrollToTopImmediate();
     this.loadEmployees();
   }
 

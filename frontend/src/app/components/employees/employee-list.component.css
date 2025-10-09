@@ -93,7 +93,7 @@
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(226, 232, 240, 0.8);
-  margin: -30px 60px 40px 60px;
+  margin: 30px 60px 40px 60px;
   padding: 40px;
   position: relative;
   z-index: 2;
@@ -132,7 +132,7 @@
 
 .search-container {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 0;
 }
 
 .search-input-wrapper {
@@ -319,7 +319,8 @@
 
 /* Employees Section */
 .employees-section {
-  padding: 40px 60px;
+  padding: 0px 60px;
+  padding-bottom: 60px;
   max-width: 1260px;
   margin: 0 auto;
 }
